@@ -11,20 +11,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: conda-incubator/setup-miniconda@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      
       - name: Install dependencies
-        shell: bash -l {0}
         run: |
-          conda env update -f MLproject/conda.yaml
-          conda activate titanic_env
-      - name: Run MLproject
-        shell: bash -l {0}
+          pip install --upgrade pip
+          pip install mlflow==2.19.0 pandas scikit-learn joblib
+      
+      - name: Run training
         run: |
-          conda activate titanic_env
-          mlflow run MLproject -P data_path=MLproject/titanic_preprocessed.csv
-      - uses: actions/upload-artifact@v4
+          python MLproject/modelling.py --data_path MLproject/titanic_preprocessed.csv
+      
+      - name: Upload model
+        uses: actions/upload-artifact@v4
         with:
           name: trained-model
           path: MLproject/model.pkl
