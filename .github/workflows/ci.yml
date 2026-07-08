@@ -2,8 +2,6 @@ name: CI Model Training
 
 on:
   push:
-    paths:
-      - 'MLproject/**'
   workflow_dispatch:
 
 jobs:
@@ -18,13 +16,10 @@ jobs:
           python-version: '3.12'
       
       - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install mlflow==2.19.0 pandas scikit-learn joblib
+        run: pip install pandas scikit-learn joblib mlflow==2.19.0
       
       - name: Run training
-        run: |
-          python MLproject/modelling.py --data_path MLproject/titanic_preprocessed.csv
+        run: python MLproject/modelling.py --data_path MLproject/titanic_preprocessed.csv
       
       - name: Upload model
         uses: actions/upload-artifact@v4
